@@ -1,14 +1,33 @@
 # AI-Driven Guest Experience Personalization System for Hospitality
 
-A comprehensive FastAPI-based hospitality management system with AI-powered sentiment analysis and personalized guest recommendations.
+This project is a full-stack hospitality management system leveraging AI and ML for guest experience personalization, feedback analytics, and smart recommendations. It is designed for modern software development best practices, with modular code, clear separation of concerns, and extensible architecture.
 
-## Features
+## Full Functionality Overview
 
-- **AI-Powered Sentiment Analysis**: Real-time sentiment analysis of guest feedback using Hugging Face DistilBERT
-- **Personalized Recommendations**: AI-driven recommendations for amenities, dining, and activities based on CRM data
-- **Real-time Alerts**: Slack webhook integration for negative sentiment detection
-- **Dual User Interface**: Separate dashboards for admin analytics and guest recommendations
-- **Beautiful UI**: Modern, responsive templates with Jinja2
+### AI & ML Features
+
+- **Sentiment Analysis**: Uses Hugging Face DistilBERT to analyze guest feedback in real time, flagging negative sentiment and powering analytics.
+- **Personalized Recommendations**: ML-driven engine tailors dining, amenities, and activities for each guest, factoring in loyalty tier, preferences, and feedback sentiment.
+- **Recommendation Upgrades**: Gold-tier guests receive premium offers; negative feedback triggers comfort-focused suggestions.
+- **Data-Driven Analytics**: Admin dashboard visualizes feedback trends, guest satisfaction, and system health using Pandas, Matplotlib, Seaborn, and Plotly.
+- **CRM Integration**: Reads and writes guest and feedback data from JSON files, simulating a CRM backend.
+
+### Software Architecture
+
+- **Backend**: FastAPI, modular service and API layers, async endpoints, JWT authentication, password hashing, and Slack alert integration.
+- **Frontend**: Jinja2 templates, modern HTML/CSS/JS, responsive dashboards for guests and admins.
+- **Data Storage**: JSON files for users, feedback, and guest profiles; easy to swap for a real database.
+- **Testing**: Includes test scripts for feedback, alerts, analytics, and recommendations.
+
+### Key Functionalities
+
+- **Guest Dashboard**: Personalized recommendations, feedback submission, profile management.
+- **Admin Dashboard**: View analytics, manage alerts, review feedback, add guests, and system settings.
+- **Real-Time Alerts**: Slack notifications for negative feedback, admin alert dashboard for urgent issues.
+- **Role-Based Access**: Secure login for guests and admins, JWT-based session management.
+- **Feedback Analytics**: Sentiment breakdown, rating trends, and actionable insights for management.
+- **Recommendation Engine**: Considers loyalty tier, preferences, and recent feedback to suggest upgrades, comfort options, and trending amenities.
+- **Extensible Design**: Easily add new recommendation categories, ML models, or external integrations.
 
 ## Tech Stack
 
@@ -53,7 +72,7 @@ A comprehensive FastAPI-based hospitality management system with AI-powered sent
 
 4. **Install dependencies**
    ```bash
-   pip install -r requirements.txt
+   pip install -r requirements-minimal.txt
    ```
 
 5. **Set up environment variables**
@@ -61,25 +80,13 @@ A comprehensive FastAPI-based hospitality management system with AI-powered sent
    - Configure necessary variables for your local setup
 
 6. **Run the application**
-   - Using convenience scripts:
-     ```
-     # Windows CMD
-     run_local.bat
-     
-     # PowerShell
-     ./run_local.ps1
-     ```
-   - Or run directly:
-     ```
-     python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
-     ```
+   ```bash
+   python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 10000
+   ```
 
 7. **Access the application**
-   - Open your browser to [http://localhost:8000](http://localhost:8000)
+   - Open your browser to [http://localhost:10000](http://localhost:10000)
    - Use the admin interface to create guest accounts and manage the system
-   ```bash
-   uvicorn app.main:app --reload
-   ```
 
 ## Users
 

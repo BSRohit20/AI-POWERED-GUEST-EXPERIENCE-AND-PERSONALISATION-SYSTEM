@@ -1,0 +1,108 @@
+[33mcommit be84953211b168eea715d3fed42779b9e536f0bd[m[33m ([m[1;36mHEAD[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: B S Rohit <155977713+BSRohit20@users.noreply.github.com>
+Date:   Sat Jul 12 19:10:29 2025 +0530
+
+    Force Docker deployment - hide Python buildpack triggers
+    
+    - Temporarily moved requirements files that trigger Python buildpack
+    - Updated render.yaml with new service name and explicit Docker config
+    - Enhanced .dockerignore to exclude buildpack triggers
+    - Added manual deployment guides for forcing Docker environment
+    - This should prevent Render from defaulting to Python 3.13
+
+[33mcommit 43d6e092fafdd4550c85e9d854f3a6a390ef742d[m
+Author: B S Rohit <155977713+BSRohit20@users.noreply.github.com>
+Date:   Sat Jul 12 19:06:47 2025 +0530
+
+    Fix Docker deployment configuration
+    
+    - Remove .render-buildpacks.json that was forcing Python environment
+    - Clean up Dockerfile with single CMD statement
+    - Fix render.yaml Docker configuration
+    - This should force Render to use Docker instead of Python buildpack
+
+[33mcommit 77646e65ca644055264ef15822630cfaf0a69268[m
+Author: B S Rohit <155977713+BSRohit20@users.noreply.github.com>
+Date:   Sat Jul 12 19:03:09 2025 +0530
+
+    Switch to Docker deployment for Python 3.11 compatibility
+    
+    - Updated render.yaml to use Docker environment instead of native Python
+    - Fixed Dockerfile with Python 3.11.9 and minimal requirements
+    - Added .dockerignore for optimized builds
+    - Health endpoint already exists at /health
+    - This should resolve setuptools.build_meta import errors
+
+[33mcommit 6722f7dc356bf1c01843d1c41cafbf736b4153b1[m
+Author: B S Rohit <155977713+BSRohit20@users.noreply.github.com>
+Date:   Sat Jul 12 18:58:50 2025 +0530
+
+    Force Python 3.11 and minimal dependencies for Render compatibility
+
+[33mcommit ca046735fdea6ae2a0f299eaf627b3f93250df8b[m
+Author: B S Rohit <155977713+BSRohit20@users.noreply.github.com>
+Date:   Fri Jul 11 23:51:04 2025 +0530
+
+    Fix Python 3.13 setuptools issue for Render deployment
+
+[33mcommit 13c4371dea225c702dfff3aece09a961f0ec54b2[m
+Author: B S Rohit <155977713+BSRohit20@users.noreply.github.com>
+Date:   Fri Jul 11 23:46:19 2025 +0530
+
+    Fix PyTorch version for Render deployment
+
+[33mcommit e196fb7edc8e531bb2118e2838a7b7874cf04d18[m
+Author: B S Rohit <155977713+BSRohit20@users.noreply.github.com>
+Date:   Fri Jul 11 23:45:34 2025 +0530
+
+    Fix PyTorch version for Render deployment
+
+[33mcommit 1b94697f9c823b7a2f64b6bd6cd1f561747b9679[m
+Author: B S Rohit <155977713+BSRohit20@users.noreply.github.com>
+Date:   Fri Jul 11 23:36:52 2025 +0530
+
+    Prepare for Render deployment
+
+[33mcommit 118562cef24ab05407594fb6a38003e978c804e5[m
+Author: B S Rohit <155977713+BSRohit20@users.noreply.github.com>
+Date:   Fri Jul 11 22:01:23 2025 +0530
+
+    Clean up project: Remove unnecessary files for production
+    
+    - Removed all deployment configuration files (Docker, Vercel, Railway, etc.)
+    - Deleted test files and debugging scripts
+    - Removed documentation files and troubleshooting guides
+    - Updated cleanup script to reflect clean state
+    - Streamlined project structure for local development only
+    - Updated feedback submissions with latest data
+    
+    Project now contains only essential files:
+    - Core application (app/)
+    - Dependencies (requirements.txt)
+    - Documentation (README.md)
+    - Startup scripts (run_local.*, start_server.*)
+    - Configuration (.env, .gitignore)
+
+[33mcommit 01657b66a8f47e2303439987e608feeb1096971f[m
+Author: B S Rohit <155977713+BSRohit20@users.noreply.github.com>
+Date:   Thu Jul 3 17:17:49 2025 +0530
+
+    Update README: Enhanced tech stack details and removed credentials
+    
+    - Added comprehensive tech stack with all dependencies
+    - Updated repository URL to correct GitHub link
+    - Removed login credentials for security
+    - Improved documentation structure
+
+[33mcommit cd93d96fc1c64896ea0aeea88690b258df4b38f0[m
+Author: B S Rohit <155977713+BSRohit20@users.noreply.github.com>
+Date:   Thu Jul 3 17:13:30 2025 +0530
+
+    Initial commit: AI-Driven Guest Experience System for local development
+    
+    - Complete FastAPI application with admin and guest dashboards
+    - AI-powered sentiment analysis and recommendations
+    - Admin functionality to add new guest users
+    - Clean codebase optimized for local development
+    - Removed deployment files to focus on localhost usage
+    - Added convenient startup scripts for Windows

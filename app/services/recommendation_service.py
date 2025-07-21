@@ -71,34 +71,48 @@ class RecommendationService:
         return None
     
     async def _analyze_guest_preferences(self, guest: Dict) -> Dict:
-        """Analyze guest preferences from profile and feedback"""
+        """Advanced analysis of guest preferences, loyalty tier, and feedback sentiment."""
         preferences = {
             "cuisine_preference": guest.get("preferences", {}).get("cuisine", "international"),
             "activity_level": guest.get("preferences", {}).get("activity_level", "moderate"),
             "budget_tier": guest.get("loyalty_tier", "standard").lower(),
             "previous_ratings": [],
             "sentiment_history": [],
-            "personalization_score": 0.5
+            "personalization_score": 0.5,
+            "loyalty_tier": guest.get("loyalty_tier", "standard").lower(),
+            "recent_sentiment": "neutral"
         }
-        
-        # Analyze feedback sentiment for this guest
+
         guest_feedback = [f for f in self.feedback_data if f.get("guest_id") == guest.get("guest_id")]
-        
-        if guest_feedback:
-            for feedback in guest_feedback[-5:]:  # Last 5 feedback entries
+        feedback_history = guest_feedback[-5:] if guest_feedback else []
+
+        if feedback_history:
+            positive_count = 0
+            negative_count = 0
+            for feedback in feedback_history:
                 sentiment_result = await sentiment_service.analyze_sentiment(feedback.get("feedback_text", ""))
                 preferences["sentiment_history"].append(sentiment_result)
                 preferences["previous_ratings"].append(feedback.get("rating", 3))
-            
-            # Calculate personalization score
+                if sentiment_result["sentiment"] == "positive":
+                    positive_count += 1
+                elif sentiment_result["sentiment"] == "negative":
+                    negative_count += 1
+
+            # Recent sentiment (last feedback)
+            if preferences["sentiment_history"]:
+                preferences["recent_sentiment"] = preferences["sentiment_history"][-1]["sentiment"]
+
             avg_rating = sum(preferences["previous_ratings"]) / len(preferences["previous_ratings"])
-            avg_sentiment = sum(1 if s["sentiment"] == "positive" else 0 for s in preferences["sentiment_history"]) / len(preferences["sentiment_history"])
-            preferences["personalization_score"] = (avg_rating / 5.0 + avg_sentiment) / 2
-        
+            avg_sentiment = positive_count / len(feedback_history)
+            # Boost score for Gold tier, reduce for negative feedback
+            tier_boost = 0.15 if preferences["loyalty_tier"] == "gold" else 0
+            sentiment_boost = -0.15 if preferences["recent_sentiment"] == "negative" else 0.05 if preferences["recent_sentiment"] == "positive" else 0
+            preferences["personalization_score"] = min(1.0, max(0.0, (avg_rating / 5.0 + avg_sentiment) / 2 + tier_boost + sentiment_boost))
+
         return preferences
     
     def _get_dining_recommendations(self, preferences: Dict) -> List[Dict]:
-        """Generate dining recommendations"""
+        """Generate dining recommendations with loyalty and preference enhancements"""
         all_dining = [
             {
                 "name": "Skyline Rooftop Restaurant",
@@ -107,7 +121,8 @@ class RecommendationService:
                 "rating": 4.8,
                 "description": "Exquisite fine dining with panoramic city views",
                 "image": "/static/images/dining/skyline.jpg",
-                "specialties": ["Wagyu Beef", "Fresh Seafood", "Craft Cocktails"]
+                "specialties": ["Wagyu Beef", "Fresh Seafood", "Craft Cocktails"],
+                "upgrade_offer": "Gold guests get complimentary dessert!" if preferences.get("loyalty_tier") == "gold" else None
             },
             {
                 "name": "Garden Bistro",
@@ -137,15 +152,32 @@ class RecommendationService:
                 "specialties": ["Seasonal Menu", "Local Ingredients", "Comfort Food"]
             }
         ]
-        
-        # Filter and score based on preferences
+
+        # Prioritize cuisine preference
+        preferred = [r for r in all_dining if r["cuisine"] == preferences.get("cuisine_preference")]
+        others = [r for r in all_dining if r["cuisine"] != preferences.get("cuisine_preference")]
         scored_dining = []
-        for restaurant in all_dining:
+        for restaurant in preferred + others:
             score = self._calculate_dining_score(restaurant, preferences)
+            # Boost for Gold guests
+            if preferences.get("loyalty_tier") == "gold":
+                score += 0.1
             restaurant["recommendation_score"] = score
             scored_dining.append(restaurant)
-        
-        # Sort by score and return top 3
+
+        # If recent feedback is negative, add a suggestion for improvement
+        if preferences.get("recent_sentiment") == "negative":
+            scored_dining.append({
+                "name": "Chef's Special Comfort Meal",
+                "cuisine": "international",
+                "price_tier": "standard",
+                "rating": 4.7,
+                "description": "A personalized comfort meal to improve your stay experience.",
+                "image": "/static/images/dining/comfort.jpg",
+                "specialties": ["Custom Comfort Food"],
+                "recommendation_score": 1.0
+            })
+
         scored_dining.sort(key=lambda x: x["recommendation_score"], reverse=True)
         return scored_dining[:3]
     
